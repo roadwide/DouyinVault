@@ -1,0 +1,16 @@
+# Cloudflare Tunnel example for vault.example.com.
+# 1. cloudflared tunnel create douyin-vault
+# 2. copy this file to ~/.cloudflared/config.yml and replace the UUID/path
+# 3. cloudflared tunnel route dns douyin-vault vault.example.com
+# 4. protect the hostname with a Cloudflare Access policy (email/SSO)
+# 5. cloudflared service install
+tunnel: REPLACE_WITH_TUNNEL_UUID
+credentials-file: /Users/REPLACE_ME/.cloudflared/REPLACE_WITH_TUNNEL_UUID.json
+
+ingress:
+  - hostname: vault.example.com
+    service: http://127.0.0.1:18760
+    originRequest:
+      connectTimeout: 30s
+      noHappyEyeballs: true
+  - service: http_status:404

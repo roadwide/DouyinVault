@@ -1,0 +1,44 @@
+[
+  {
+    "accountId": "01TESTACCOUNT00000000000000",
+    "groupId": "7000000000000000001",
+    "groupName": "周一摸鱼研究所",
+    "messageId": "fixture-message-001",
+    "senderId": "8000000000000000101",
+    "senderName": "林小满",
+    "sentAt": 1794378000000,
+    "receivedAt": 1794378001200,
+    "type": "shared_work",
+    "workId": "7412345678901234567",
+    "shareUrl": "https://www.douyin.com/video/7412345678901234567",
+    "title": "海边日落的 30 秒",
+    "source": "realtime"
+  },
+  {
+    "accountId": "01TESTACCOUNT00000000000000",
+    "groupId": "7000000000000000001",
+    "groupName": "周一摸鱼研究所",
+    "messageId": "fixture-message-002",
+    "senderId": "8000000000000000102",
+    "senderName": "周野",
+    "sentAt": 1794378060000,
+    "receivedAt": 1794378060500,
+    "type": "text_with_url",
+    "shareUrl": "https://v.douyin.com/L4FJNR3/",
+    "title": "普通文本里的抖音链接",
+    "source": "realtime"
+  },
+  {
+    "accountId": "01TESTACCOUNT00000000000000",
+    "groupId": "7000000000000000001",
+    "groupName": "周一摸鱼研究所",
+    "messageId": "fixture-message-003",
+    "senderId": "8000000000000000103",
+    "senderName": "阿哲",
+    "sentAt": 1794378120000,
+    "receivedAt": 1794378120800,
+    "type": "unknown",
+    "source": "realtime",
+    "diagnostic": "Work card without a usable work id (UNRESOLVED)."
+  }
+]

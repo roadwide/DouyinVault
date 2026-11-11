@@ -1,0 +1,43 @@
+import type BetterSqlite3 from "better-sqlite3";
+import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import type { schema } from "@vault/db";
+import type { AdminAuthService } from "../auth/admin-auth.js";
+import type { AuthService } from "../auth/auth-service.js";
+import type { BackupService } from "../backup/service.js";
+import type { CleanupService } from "../cleanup/service.js";
+import type { AppConfig, Paths } from "../config.js";
+import type { DownloadWorker } from "../downloads/worker.js";
+import type { EventBus } from "../events.js";
+import type { GroupService } from "../groups/group-service.js";
+import type { GroupSyncService } from "../groups/sync-service.js";
+import type { HealthService } from "../health/service.js";
+import type { Logger } from "../logger.js";
+import type { MediaLibraryService } from "../media/library-service.js";
+import type { WorkAvailabilityService } from "../media/availability-service.js";
+import type { MessageIngestService } from "../messages/ingest-service.js";
+import type { MediaUrlCache } from "../messages/media-cache.js";
+import type { SettingsService } from "../settings/service.js";
+import type { StorageService } from "../storage/storage-service.js";
+
+export interface ApiDeps {
+  config: AppConfig;
+  paths: Paths;
+  db: BetterSQLite3Database<typeof schema>;
+  sqlite: BetterSqlite3.Database;
+  logger: Logger;
+  bus: EventBus;
+  adminAuth: AdminAuthService;
+  auth: AuthService;
+  groups: GroupService;
+  groupSync: GroupSyncService;
+  ingest: MessageIngestService;
+  mediaCache: MediaUrlCache;
+  library: MediaLibraryService;
+  availability: WorkAvailabilityService;
+  worker: DownloadWorker;
+  settings: SettingsService;
+  cleanup: CleanupService;
+  backup: BackupService;
+  health: HealthService;
+  storage: StorageService;
+}

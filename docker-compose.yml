@@ -1,0 +1,23 @@
+services:
+  vault:
+    build: .
+    container_name: douyin-vault
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:18760:18760"
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 18760
+      DATA_DIR: /data
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://127.0.0.1:18760}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      IM_ADAPTER: ${IM_ADAPTER:-douyin-im}
+      DEMO_MODE: "false"
+      DTK_BASE_URL: ${DTK_BASE_URL:-}
+      DTK_API_KEY: ${DTK_API_KEY:-}
+      FFMPEG_PATH: ffmpeg
+      FFPROBE_PATH: ffprobe
+      YTDLP_PATH: yt-dlp
+    volumes:
+      - ./data:/data

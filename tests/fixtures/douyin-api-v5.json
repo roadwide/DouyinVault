@@ -1,0 +1,65 @@
+{
+  "success": true,
+  "data": {
+    "task_id": "fixture-task",
+    "state": "done",
+    "content": {
+      "aweme_id": "7412345678901234567",
+      "desc": "海边日落的 30 秒",
+      "create_time": 1794378000,
+      "author": {
+        "uid": "8000000000000000101",
+        "nickname": "林小满",
+        "avatar": {
+          "url_list": ["https://p3.douyinpic.com/avatar.jpeg"]
+        }
+      },
+      "cover": {
+        "url_list": ["https://p3.douyinpic.com/cover.jpeg"]
+      },
+      "duration": 12.5,
+      "video": {
+        "duration": 12500,
+        "play_addr": {
+          "uri": "video/tos/cn/tos-cn-ve-15/fixture",
+          "url_list": [
+            "https://v3.douyinvod.com/video/tos/cn/tos-cn-ve-15/fixture/?a=6383&mime_type=video_mp4&signature=fixture"
+          ]
+        },
+        "cover": {
+          "url_list": ["https://p3.douyinpic.com/video-cover.jpeg"]
+        },
+        "bit_rate": [
+          {
+            "gear_name": "adapt_lowest_720_1",
+            "bit_rate": 1200000,
+            "play_addr": {
+              "url_list": [
+                "https://v26.douyinvod.com/video/tos/cn/tos-cn-ve-15/low-720/?mime_type=video_mp4"
+              ]
+            }
+          },
+          {
+            "gear_name": "adapt_lowest_1080_1",
+            "bit_rate": 2400000,
+            "play_addr": {
+              "url_list": [
+                "https://v26.douyinvod.com/video/tos/cn/tos-cn-ve-15/high-1080/?mime_type=video_mp4"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "media": [
+      {
+        "kind": "video",
+        "url": "https://v3.douyinvod.com/video/tos/cn/tos-cn-ve-15/fixture/?mime_type=video_mp4"
+      }
+    ]
+  },
+  "error": null,
+  "meta": {
+    "request_id": "fixture"
+  }
+}
