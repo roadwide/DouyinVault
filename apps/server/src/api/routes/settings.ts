@@ -13,6 +13,7 @@ export function registerSettingsRoutes(app: FastifyInstance, deps: ApiDeps): voi
         dtkConfigured: Boolean(deps.config.dtkBaseUrl),
         dtkMode: deps.config.dtkMode,
         ytdlpPath: deps.config.ytdlpPath,
+        ytdlpCookiesConfigured: Boolean(deps.config.ytdlpCookiesPath),
         ffmpegPath: deps.config.ffmpegPath,
         ffprobePath: deps.config.ffprobePath,
         mediaAllowedHosts: deps.config.mediaAllowedHosts,

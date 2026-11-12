@@ -34,6 +34,7 @@ import type { MessageIngestService } from "../messages/ingest-service.js";
 import type { MediaUrlCache } from "../messages/media-cache.js";
 import type { SettingsService } from "../settings/service.js";
 import type { StorageService } from "../storage/storage-service.js";
+import { selectDownloadError, type AdapterFailure } from "./error-selection.js";
 
 interface ActiveDownload {
   jobId: string;
@@ -456,6 +457,7 @@ export class DownloadWorker {
     let lastError: unknown = new DownloadError("UNRESOLVED", "所有下载适配器均失败");
     let retryableError: unknown = null;
     let specificError: unknown = null;
+    const failures: AdapterFailure[] = [];
     let tempRetained = false;
 
     for (let index = 0; index < candidates.length; index++) {
@@ -618,6 +620,14 @@ export class DownloadWorker {
       } catch (error) {
         lastError = error;
         const vaultError = toVaultError(error);
+        failures.push({ adapter: adapter.name, error: vaultError });
+        if (adapter.name === "direct") {
+          // Never retry the same signed URL after a failed direct download:
+          // clear the memory cache so the next attempt asks the IM session for
+          // a fresh address instead of replaying an expired/blocked one.
+          this.mediaCache.deleteForVideo(videoId);
+          if (latestMessage) this.mediaCache.delete(latestMessage.id);
+        }
         this.logger.warn(
           { jobId, videoId, adapter: adapter.name, code: vaultError.code, error: truncate(vaultError.message, 300) },
           "下载适配器失败",
@@ -640,18 +650,13 @@ export class DownloadWorker {
       }
     }
 
-    // Prefer a transient error so the job can retry, then a concrete media
-    // error (invalid format, bad configuration) over a generic "unavailable"
-    // from a later fallback adapter. If only generic failures remain, keep the
-    // IM resolver's reason because it is the most actionable.
-    let error = toVaultError(retryableError ?? specificError ?? lastError);
-    if (!retryableError && !specificError && resolveFailure && error.code === "RESOURCE_UNAVAILABLE") {
-      error = new DownloadError(
-        "RESOURCE_UNAVAILABLE",
-        `主 IM 适配器无法解析该作品：${resolveFailure}`,
-        { retryable: false },
-      );
-    }
+    const error = selectDownloadError({
+      retryableError,
+      specificError,
+      lastError,
+      resolveFailure,
+      failures,
+    });
     if (!tempRetained) this.safeDelete(tempPath);
     await this.finishFailure(jobId, videoId, error, job.attempts, job.maxAttempts);
   }
@@ -690,6 +695,7 @@ export class DownloadWorker {
       new YtDlpDownloader({
         binaryPath: this.config.ytdlpPath,
         ffmpegPath: this.config.ffmpegPath,
+        cookiesPath: this.config.ytdlpCookiesPath,
         preferredQuality: quality,
         timeoutSeconds: Math.max(timeoutSeconds, 300),
       }),

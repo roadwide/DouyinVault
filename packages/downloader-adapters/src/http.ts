@@ -49,7 +49,7 @@ async function fetchFollowingValidatedRedirects(
       if (options.validateUrl && !options.validateUrl(next)) {
         throw new DownloadError(
           "RESOURCE_UNAVAILABLE",
-          `重定向目标不在允许的域名范围内（${new URL(next).hostname}）`,
+          `重定向目标不在允许的域名范围内（${new URL(next).hostname}）；如确认是抖音 CDN，请将其加入 MEDIA_ALLOWED_HOSTS`,
         );
       }
       current = next;

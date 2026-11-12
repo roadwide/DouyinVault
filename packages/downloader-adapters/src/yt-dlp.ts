@@ -59,6 +59,7 @@ export class YtDlpDownloader implements MediaDownloader {
     private readonly options: {
       binaryPath: string;
       ffmpegPath?: string;
+      cookiesPath?: string | null;
       preferredQuality?: "540p" | "720p" | "1080p" | "best";
       timeoutSeconds?: number;
     },
@@ -89,6 +90,13 @@ export class YtDlpDownloader implements MediaDownloader {
     signal?: AbortSignal,
   ): Promise<DownloadResult> {
     const binary = this.options.binaryPath || "yt-dlp";
+    const cookiesPath = this.options.cookiesPath;
+    if (cookiesPath && !existsSync(cookiesPath)) {
+      throw new DownloadError(
+        "CONFIG",
+        `yt-dlp Cookie 文件不存在或不可读：${cookiesPath}（请检查 YTDLP_COOKIES_PATH）`,
+      );
+    }
     const quality = this.options.preferredQuality ?? "720p";
     const height = quality === "best" ? null : Number.parseInt(quality, 10);
     const format = height
@@ -115,6 +123,7 @@ export class YtDlpDownloader implements MediaDownloader {
       media.url,
     ];
     if (this.options.ffmpegPath) args.unshift("--ffmpeg-location", this.options.ffmpegPath);
+    if (cookiesPath) args.unshift("--cookies", cookiesPath);
 
     return new Promise<DownloadResult>((resolve, reject) => {
       const child = spawn(binary, args, {

@@ -581,6 +581,7 @@ export function SettingsPage() {
               <div className="flex justify-between gap-4"><dt className="text-ink-600">IM 适配器</dt><dd className="text-ink-300">{data.environment.adapter}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-ink-600">下载 API</dt><dd className="text-ink-300">{data.environment.dtkConfigured ? `已配置（${data.environment.dtkMode}）` : "未配置"}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-ink-600">yt-dlp</dt><dd className="truncate font-mono text-ink-300">{data.environment.ytdlpPath}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="text-ink-600">yt-dlp Cookie</dt><dd className="text-ink-300">{data.environment.ytdlpCookiesConfigured ? "已配置" : "未配置"}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-ink-600">ffprobe</dt><dd className="truncate font-mono text-ink-300">{data.environment.ffprobePath}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-ink-600">运行环境</dt><dd className="text-ink-300">{data.environment.nodeEnv}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-ink-600">上次备份</dt><dd className="text-ink-300">{formatRelative(data.backup.lastRunAt)}</dd></div>

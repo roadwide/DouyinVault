@@ -110,6 +110,16 @@ ssh -L XXXX:127.0.0.1:XXXX user@mac-mini
 
 ## 4. 下载失败
 
+### 下载器调用顺序与重试
+
+单次任务按以下顺序尝试：
+
+1. 有内存直链时先交给 Direct；没有直链时，先通过主 IM 会话（`douyin-im`）按作品 ID + 来源群重新解析。
+2. 然后按 Direct → 下载 API（配置 `DTK_BASE_URL` 时）→ yt-dlp 的顺序尝试。
+3. 每个适配器在同一个任务内只尝试一次，解析和下载错误都会保留；全部失败才结束任务。
+
+只有 `NETWORK`、`TIMEOUT`、`HTTP_ERROR`、`RATE_LIMITED` 等可重试错误会进入 `RETRY_WAIT`。403、需要 Cookie、重定向域名不在白名单等资源/配置错误不会自动重试。点击「重试」会重新执行整个链路；Direct 失败后该视频的内存直链会被清除，下一次会重新向 IM 会话获取，而不是重复使用旧地址。
+
 ### 错误码速查
 
 | 错误码 | 含义 | 处理 |
@@ -131,13 +141,49 @@ ssh -L XXXX:127.0.0.1:XXXX user@mac-mini
 
 Worker 会先通过主 IM 适配器（`douyin-im`）的已登录会话，按作品 ID + 来源群重新获取授权直链；只有该步骤没有拿到直链时，才会落到 yt-dlp，并出现这个提示。本项目不会共享或导出 douyin-im Session 给 yt-dlp。
 
+如果日志中同一任务已经出现 `已通过主 IM 适配器获取媒体直链`，说明账号连接和 IM 解析都成功了；请继续查看该任务的 `下载适配器失败` 日志，真正原因通常是 Direct 下载失败（例如重定向域名不在白名单）。当前版本会优先把 Direct 的具体失败作为最终错误，不会再被 yt-dlp 的 Cookie 提示覆盖。
+
 处理顺序：
 
 1. 在群聊页确认抖音账号仍是「已连接」，并确认来源群仍启用；
 2. 查看作品详情或原作品页，确认作品不是私密、已删除，且不是仅音频/图集；
-3. 对历史失败任务点击「重试」或「重试失败任务」，Worker 会重新尝试 IM 直链；
-4. 仍失败时配置独立下载 API；
-5. 或接受该作品失败并保留记录，不要无限重试。
+3. 查看 `下载适配器失败` 日志，确认 Direct 的具体错误；
+4. 对历史失败任务点击「重试」或「重试失败任务」，Worker 会重新尝试 IM 直链；
+5. 仍失败时配置独立下载 API；
+6. 或接受该作品失败并保留记录，不要无限重试。
+
+### 给 yt-dlp 配置浏览器 Cookie
+
+`douyin-im` 的桌面 IM 会话不能直接给 yt-dlp 使用（缺少网页端 `Uifid` / `s_v_web_id` / 签名参数）。如果确实要尝试 yt-dlp，需要单独从浏览器导出：
+
+1. 在 Chrome / Edge / Firefox 中打开 `https://www.douyin.com/`，确认已登录或至少能正常浏览；
+2. 用 Cookie 导出扩展（Chrome 可用 `Get cookies.txt LOCALLY`，Firefox 可用 `Export Cookies`）导出 Netscape 格式的 `cookies.txt`；
+3. 保存到本机，例如 `data/yt-dlp-cookies.txt`，并限制权限：
+
+   ```bash
+   chmod 600 data/yt-dlp-cookies.txt
+   ```
+
+4. 在 `.env` 中设置：
+
+   ```dotenv
+   YTDLP_COOKIES_PATH=./data/yt-dlp-cookies.txt
+   ```
+
+5. 重启服务，设置页会显示「yt-dlp Cookie：已配置」；
+6. 重新下载仍失败时，说明 yt-dlp 的抖音提取器没有通过网页反爬校验，继续使用 `douyin-im` 直链或配置下载 API。
+
+不要把 Cookie 内容贴到聊天、Issue 或日志里，也不要把 `YTDLP_COOKIES_PATH` 指向 `data/sessions/douyin-im/accounts/*/account.json`。
+
+### 重定向目标不在允许的域名范围内
+
+抖音 CDN 可能把直链重定向到新的子域。日志中的错误会给出被拦截的主机名。确认该域名确实属于抖音 CDN 后，在 `.env` 中把它加入白名单并重启：
+
+```dotenv
+MEDIA_ALLOWED_HOSTS=cdn.example.com
+```
+
+多个域名用逗号分隔。不要把未知域名或任意公网域名加入白名单。
 
 ### 下载 API 不可用
 

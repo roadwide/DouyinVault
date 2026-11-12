@@ -80,6 +80,11 @@ describe("Douyin share parsing", () => {
 describe("media host allowlist", () => {
   it("accepts Douyin CDN subdomains over HTTPS", () => {
     expect(isAllowedMediaUrl("https://v3.douyinvod.com/video/tos/abc?mime_type=video_mp4")).toBe(true);
+    expect(
+      isAllowedMediaUrl(
+        "https://edge.free-lbv6.idouyinvod.com/video/tos/abc?mime_type=video_mp4",
+      ),
+    ).toBe(true);
     expect(isAllowedMediaUrl("https://p3.douyinpic.com/cover.jpg")).toBe(true);
   });
 

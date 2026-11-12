@@ -14,6 +14,7 @@ const DEFAULT_MEDIA_HOSTS = [
   "douyin.com",
   "iesdouyin.com",
   "douyinvod.com",
+  "idouyinvod.com",
   "douyinpic.com",
   "douyincdn.com",
   "douyinstatic.com",

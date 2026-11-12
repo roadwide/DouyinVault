@@ -35,6 +35,10 @@ export class MediaUrlCache {
     return this.get(`video:${videoId}`);
   }
 
+  deleteForVideo(videoId: string): void {
+    this.entries.delete(`video:${videoId}`);
+  }
+
   delete(messageId: string): void {
     this.entries.delete(messageId);
   }

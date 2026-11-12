@@ -147,7 +147,7 @@ PENDING → RESOLVING → DOWNLOADING → VERIFYING → COMPLETED
 5. 条件更新 `status=RESOLVING` 并写入租约和 `attempts+1`。
 6. 用进程内 Map 限制实际并发。
 
-内存直链不存在时，Worker 先通过主 IM 适配器的已登录会话按作品 ID + 来源群获取新的直链；拿到后按 Direct → Douyin API → yt-dlp 顺序尝试。每个适配器的解析与下载错误都会保留；只有全部失败才结束任务。可重试错误优先于泛化的资源不可用错误。
+内存直链不存在时，Worker 先通过主 IM 适配器的已登录会话按作品 ID + 来源群获取新的直链；拿到后按 Direct → Douyin API → yt-dlp 顺序尝试。每个适配器的解析与下载错误都会保留；只有全部失败才结束任务。可重试错误优先于泛化的资源不可用错误；主 IM 已拿到直链时，最终错误优先采用 Direct 的具体失败原因，避免被最后兜底的 yt-dlp Cookie 提示误导。Direct 失败后会清除该视频的内存直链，下一次重试重新向 IM 会话获取。
 
 ### 5.2 续传与超时
 

@@ -24,6 +24,7 @@ const EnvSchema = z.object({
   DTK_API_KEY: z.string().optional(),
   DTK_MODE: z.enum(["auto", "v5", "v4"]).default("auto"),
   YTDLP_PATH: z.string().default("yt-dlp"),
+  YTDLP_COOKIES_PATH: z.string().optional(),
   FFMPEG_PATH: z.string().default("ffmpeg"),
   FFPROBE_PATH: z.string().default("ffprobe"),
   MEDIA_ALLOWED_HOSTS: z.string().optional(),
@@ -49,6 +50,7 @@ export interface AppConfig {
   dtkApiKey: string | null;
   dtkMode: "auto" | "v5" | "v4";
   ytdlpPath: string;
+  ytdlpCookiesPath: string | null;
   ffmpegPath: string;
   ffprobePath: string;
   mediaAllowedHosts: string[];
@@ -97,6 +99,9 @@ export function loadConfig(overrides: Partial<Record<string, string>> = {}): App
     dtkApiKey: parsed.DTK_API_KEY || null,
     dtkMode: parsed.DTK_MODE,
     ytdlpPath: parsed.YTDLP_PATH,
+    ytdlpCookiesPath: parsed.YTDLP_COOKIES_PATH
+      ? resolve(parsed.YTDLP_COOKIES_PATH)
+      : null,
     ffmpegPath: parsed.FFMPEG_PATH,
     ffprobePath: parsed.FFPROBE_PATH,
     mediaAllowedHosts: (parsed.MEDIA_ALLOWED_HOSTS ?? "")

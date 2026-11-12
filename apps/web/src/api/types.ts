@@ -260,6 +260,7 @@ export interface SettingsResponse {
     dtkConfigured: boolean;
     dtkMode: string;
     ytdlpPath: string;
+    ytdlpCookiesConfigured: boolean;
     ffmpegPath: string;
     ffprobePath: string;
     mediaAllowedHosts: string[];

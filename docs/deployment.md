@@ -76,6 +76,8 @@ DTK_API_KEY=
 DTK_MODE=auto
 
 YTDLP_PATH=yt-dlp
+# 可选：浏览器导出的 Netscape 格式 Cookie，仅给 yt-dlp 兜底使用
+YTDLP_COOKIES_PATH=
 FFMPEG_PATH=ffmpeg
 FFPROBE_PATH=ffprobe
 ```
@@ -86,6 +88,7 @@ FFPROBE_PATH=ffprobe
 - `PUBLIC_ORIGIN` 用于 CSRF Origin 校验，必须与浏览器实际打开的 Origin 完全一致。
 - 不建议在 `.env` 长期保存管理员密码；首次使用 `ADMIN_PASSWORD` 会写入 scrypt 哈希，随后删掉该变量或留空都不会改变已设置密码。
 - `DTK_API_KEY` 只由服务端读取，不返回前端。
+- `YTDLP_COOKIES_PATH` 只接受从 `www.douyin.com` 浏览器会话导出的 Cookie 文件，不要指向 `douyin-im` 的 `account.json`；该文件包含登录凭据，权限应为 `600`，不要提交到 Git。
 
 ## 4. 首次启动与管理员密码
 
